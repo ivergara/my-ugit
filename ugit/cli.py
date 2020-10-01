@@ -3,7 +3,7 @@ from pathlib import Path
 
 import typer
 
-from . import data
+from . import data, base
 
 app = typer.Typer()
 
@@ -19,10 +19,16 @@ def init():
 
 @app.command()
 def hash_object(name: Path):
-    print(data.hash_object(name))
+    with open(name, 'rb') as f:
+        print(data.hash_object(f.read()))
 
 
 @app.command()
 def cat_file(oid: str):
     sys.stdout.flush()
-    sys.stdout.buffer.write(data.get_object(oid))
+    sys.stdout.buffer.write(data.get_object(oid, expected=None))
+
+
+@app.command()
+def write_tree():
+    print(base.write_tree())
